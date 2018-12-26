@@ -140,6 +140,18 @@ services:
       - ARCHIVE_HOST=archive-${ENDPOINT_HOSTNAME}
       - ARCHIVE_PORT=443
 
+  robotstxt:
+    image: openstax/robotstxt
+    networks:
+      - default
+      - traefik-net
+    deploy:
+      labels:
+        - "traefik.port=80"
+        - "traefik.docker.network=traefik-net"
+        - "traefik.frontend.rule=Host:${ENDPOINT_HOSTNAME},archive-${ENDPOINT_HOSTNAME},legacy-${ENDPOINT_HOSTNAME};Path:/robots.txt"
+        - "traefik.frontend.redirect=https"
+
   http-cache:
     image: openstax/cnx-varnish:latest
     command: "-T 127.0.0.1:6082"
