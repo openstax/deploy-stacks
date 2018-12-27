@@ -176,6 +176,7 @@ services:
       - VARNISH_PRESS_PORT=6543
       - VARNISH_ARCLISHING_DOMAIN=archive-${ENDPOINT_HOSTNAME}
       - VARNISH_FRONTEND_DOMAIN=${ENDPOINT_HOSTNAME}
+      - VARNISH_ALLOWED_PURGE_SUBNET=${TRAEFIK_SUBNET}
     deploy:
       labels:
         - "traefik.port=80"
