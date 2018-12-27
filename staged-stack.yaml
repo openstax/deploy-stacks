@@ -58,7 +58,7 @@ services:
       - db
       - memcached
     environment:
-      - SENTRY_DSN
+      - ARCHIVE_SENTRY_DSN
 
   publishing:
     image: openstax/cnx-publishing:dev
@@ -75,7 +75,7 @@ services:
       - MATHMLCLOUD_URL
       - MEMCACHE_HOST
       - EXERCISES_URL
-      - SENTRY_DSN
+      - PUBLISHING_SENTRY_DSN
 
   publishing-worker:
     image: openstax/cnx-publishing:dev
@@ -92,7 +92,7 @@ services:
       - MATHMLCLOUD_URL
       - MEMCACHE_HOST
       - EXERCISES_URL
-      - SENTRY_DSN
+      - PUBLISHING_SENTRY_DSN
 
   channel-processing:
     image: openstax/cnx-publishing:dev
@@ -109,7 +109,7 @@ services:
       - MATHMLCLOUD_URL
       - MEMCACHE_HOST
       - EXERCISES_URL
-      - SENTRY_DSN
+      - PUBLISHING_SENTRY_DSN
 
   press:
     image: openstax/cnx-press:dev
@@ -122,7 +122,7 @@ services:
       - DB_URL
       - DB_SUPER_URL
       - AMQP_URL=${BASE_PRESS_AMQP_URL}
-      - SENTRY_DSN
+      - PRESS_SENTRY_DSN
 
   press-worker:
     image: openstax/cnx-press:dev
@@ -135,7 +135,7 @@ services:
       - DB_URL
       - DB_SUPER_URL
       - AMQP_URL=${BASE_PRESS_AMQP_URL}
-      - SENTRY_DSN
+      - PRESS_SENTRY_DSN
 
   ui:
     image: openstax/cnx-webview:dev
