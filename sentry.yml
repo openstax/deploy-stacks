@@ -1,0 +1,65 @@
+# Usage example:
+#   ```SWARM_MANAGER_HOSTNAME=sprocket ENDPOINT_HOSTNAME=tada.cnx.org docker -H sprocket stack deploy -c docker-stack.testing.yml testing```
+# Where the swarm manager is on the host named 'sprocket'.
+# The endpoint is 'tada.cnx.org' in this example, in production for example, it would be 'cnx.org'.
+
+version: '3.4'
+
+x-sentry-defaults: &sentry-defaults
+  image: openstax/sentry
+  depends_on:
+    - redis
+    - postgres
+    - memcached
+    - smtp
+  environment:
+    SENTRY_MEMCACHED_HOST: memcached
+    SENTRY_REDIS_HOST: redis
+    SENTRY_POSTGRES_HOST: postgres
+    SENTRY_EMAIL_HOST: smtp
+    SENTRY_SECRET_KEY: ${SENTRY_SECRET_KEY}
+    SENTRY_USE_SSL: 1
+  volumes:
+    - sentry-data:/var/lib/sentry/files
+
+services:
+
+  redis:
+    image: redis:3.2-alpine
+
+  db:
+    image: postgres:9.5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  smtp:
+    image: tianon/exim4
+
+  web:
+    <<: *sentry-defaults
+    networks:
+      - traefik-net
+    deploy:
+      labels:
+        - "traefik.port=9000"
+        - "traefik.docker.network=traefik-net"
+        - "traefik.frontend.rule=Host:sentry.mulich.com"
+        - "traefik.frontend.redirect=https"
+
+  cron:
+    <<: *sentry-defaults
+    command: run cron
+
+  worker:
+    <<: *sentry-defaults
+    command: run worker
+
+volumes:
+  pgdata:
+  sentry-data:
+
+networks:
+  traefik-net:
+    driver: overlay
+    # This inaccurately states that this network was created external to the stack.
+    external: true
