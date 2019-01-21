@@ -216,15 +216,7 @@ services:
       - DB_URL
     networks:
       - default
-      # FIXME: Temporarily serve the legacy-${ENDPOINT_HOSTNAME} direct without varnish route mapping and caching
-      - traefik-net
     deploy:
-      # FIXME: Temporarily serve the legacy-${ENDPOINT_HOSTNAME} direct without varnish route mapping and caching
-      labels:
-        - "traefik.port=8080"
-        - "traefik.docker.network=traefik-net"
-        - "traefik.frontend.rule=Host:legacy-${ENDPOINT_HOSTNAME}"
-        - "traefik.frontend.redirect=https"
 
   pdf-gen:
     image: openstax/legacy-cnx-pdf-gen:dev
@@ -234,6 +226,24 @@ services:
       - DB_URL
     networks:
       - default
+
+  legacy-http-cache:
+    image: openstax/legacy-cnx-varnish:latest
+    command: "-T 127.0.0.1:6082"
+    networks:
+      - default
+      - traefik-net
+    environment:
+      - VARNISH_LEGACY_HOST=legacy-web
+      - VARNISH_WEBVIEW_PORT=8080
+      - VARNISH_FRONTEND_LEGACY_DOMAIN=legacy-${ENDPOINT_HOSTNAME}
+      - VARNISH_ALLOWED_PURGE_SUBNET=${TRAEFIK_SUBNET}
+    deploy:
+      labels:
+        - "traefik.port=8080"
+        - "traefik.docker.network=traefik-net"
+        - "traefik.frontend.rule=Host:legacy-${ENDPOINT_HOSTNAME}"
+        - "traefik.frontend.redirect=https"
 
 volumes:
   pgdata:
