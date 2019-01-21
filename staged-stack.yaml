@@ -188,7 +188,7 @@ services:
   # Legacy Software Components
   ###
 
-  zeo:
+  legacy-zeo:
     image: openstax/legacy-cnx-zeo:dev
     command: bash -c "bin/zeoserver show all && bin/zeoserver fg"
     volumes:
@@ -196,7 +196,7 @@ services:
     networks:
       - default
 
-  web:
+  legacy-web:
     image: openstax/legacy-cnx-web:dev
     command: bash -c "bin/client show all && bin/client fg"
     environment:
@@ -213,7 +213,7 @@ services:
         - "traefik.frontend.rule=Host:legacy-${ENDPOINT_HOSTNAME}"
         - "traefik.frontend.redirect=https"
 
-  pdf-gen:
+  legacy-pdf-gen:
     image: openstax/legacy-cnx-pdf-gen:dev
     command: bash -c "bin/pdf_gen show all && bin/pdf_gen fg"
     environment:
