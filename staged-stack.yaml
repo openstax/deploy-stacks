@@ -201,6 +201,7 @@ services:
     command: bash -c "bin/client show all && bin/client fg"
     environment:
       - LEGACY_ZEO_HOST=zeo
+      - DB_URL
     networks:
       - default
       # FIXME: Temporarily serve the legacy-${ENDPOINT_HOSTNAME} direct without varnish route mapping and caching
@@ -218,6 +219,7 @@ services:
     command: bash -c "bin/pdf_gen show all && bin/pdf_gen fg"
     environment:
       - LEGACY_ZEO_HOST=zeo
+      - DB_URL
     networks:
       - default
 
