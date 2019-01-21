@@ -181,11 +181,55 @@ services:
       labels:
         - "traefik.port=80"
         - "traefik.docker.network=traefik-net"
-        - "traefik.frontend.rule=Host:${ENDPOINT_HOSTNAME},archive-${ENDPOINT_HOSTNAME},legacy-${ENDPOINT_HOSTNAME}"
+        - "traefik.frontend.rule=Host:${ENDPOINT_HOSTNAME},archive-${ENDPOINT_HOSTNAME}"
         - "traefik.frontend.redirect=https"
+
+  ###
+  # Legacy Software Components
+  ###
+
+  zeo:
+    image: openstax/legacy-cnx-zeo:dev
+    ports:
+      - "8100"
+    command: bash -c "bin/zeoserver show all && bin/zeoserver fg"
+    volumes:
+      - zodb-data:/app/var/filestorage/:rw
+    networks:
+      - default
+
+  web:
+    image: openstax/legacy-cnx-web:dev
+    ports:
+      - "8080"
+    command: bash -c "bin/client show all && bin/client fg"
+    environment:
+      - LEGACY_ZEO_HOST=zeo
+    networks:
+      - default
+      # FIXME: Temporarily serve the legacy-${ENDPOINT_HOSTNAME} direct without varnish route mapping and caching
+      - traefik-net
+    deploy:
+      # FIXME: Temporarily serve the legacy-${ENDPOINT_HOSTNAME} direct without varnish route mapping and caching
+      labels:
+        - "traefik.port=8080"
+        - "traefik.docker.network=traefik-net"
+        - "traefik.frontend.rule=Host:legacy-${ENDPOINT_HOSTNAME}"
+        - "traefik.frontend.redirect=https"
+
+  pdf-gen:
+    image: openstax/legacy-cnx-pdf-gen:dev
+    ports:
+      - "8080"
+    command: bash -c "bin/pdf_gen show all && bin/pdf_gen fg"
+    environment:
+      - LEGACY_ZEO_HOST=zeo
+    networks:
+      - default
 
 volumes:
   pgdata:
+  zodb-data:
 
 networks:
   traefik-net:
