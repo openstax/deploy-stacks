@@ -190,8 +190,6 @@ services:
 
   zeo:
     image: openstax/legacy-cnx-zeo:dev
-    ports:
-      - "8100"
     command: bash -c "bin/zeoserver show all && bin/zeoserver fg"
     volumes:
       - zodb-data:/app/var/filestorage/:rw
@@ -200,8 +198,6 @@ services:
 
   web:
     image: openstax/legacy-cnx-web:dev
-    ports:
-      - "8080"
     command: bash -c "bin/client show all && bin/client fg"
     environment:
       - LEGACY_ZEO_HOST=zeo
@@ -219,8 +215,6 @@ services:
 
   pdf-gen:
     image: openstax/legacy-cnx-pdf-gen:dev
-    ports:
-      - "8080"
     command: bash -c "bin/pdf_gen show all && bin/pdf_gen fg"
     environment:
       - LEGACY_ZEO_HOST=zeo
