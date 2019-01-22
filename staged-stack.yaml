@@ -233,7 +233,7 @@ services:
       - traefik-net
     environment:
       - VARNISH_LEGACY_HOST=legacy-web
-      - VARNISH_WEBVIEW_PORT=8080
+      - VARNISH_LEGACY_PORT=8080
       - VARNISH_FRONTEND_LEGACY_DOMAIN=legacy-${ENDPOINT_HOSTNAME}
       - VARNISH_ALLOWED_PURGE_SUBNET=${TRAEFIK_SUBNET}
     deploy:
