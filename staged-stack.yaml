@@ -173,7 +173,6 @@ services:
 
   http-cache:
     image: openstax/cnx-varnish:latest
-    command: "-T 127.0.0.1:6082"
     networks:
       - default
       - traefik-net
@@ -229,7 +228,6 @@ services:
 
   legacy-http-cache:
     image: openstax/legacy-cnx-varnish:latest
-    command: "-T 127.0.0.1:6082"
     networks:
       - default
       - traefik-net
